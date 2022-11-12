@@ -103,7 +103,8 @@ jobs:
           image: ${{ env.FULL_IMAGE_NAME }}
           #image: ${{ steps.repo.outputs.REPO }}
           tags: ${{ steps.getversion.outputs.VERSION }} latest
-          registry: ${{ env.GH_REGISTRY }}/${{ github.repository_owner }}
+          #registry: ${{ env.GH_REGISTRY }}/${{ github.repository_owner }}
+          registry: ${{ env.GH_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           extra-args: |
