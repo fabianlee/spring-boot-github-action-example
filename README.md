@@ -24,10 +24,11 @@ git tag $newtag && git push origin $newtag
 # Deleting tag
 
 ```
-todel=v1.0.1
+# delete single local tag, then remote
+todel=v1.0.1; git tag -d $todel && git push origin :refs/tags/$todel
 
-# delete local tag, then remote
-git tag -d $todel && git push origin :refs/tags/$todel
+# delete range of tags
+for i in $(seq 1 9); do todel=v1.0.$i; git tag -d $todel && git push origin :refs/tags/$todel; done
 ```
 
 # Deleting release
