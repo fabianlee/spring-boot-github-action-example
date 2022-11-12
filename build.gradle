@@ -59,6 +59,20 @@ task buildah(type: Exec) {
     dependsOn bootJar
     dependsOn copyDockerfile
     workingDir "${buildDir}/libs"
-    commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${dockerOwner}/${project.name}:${dockerVersion}", "-t", "${dockerOwner}/${project.name}:latest"
+    commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${dockerOwner}/${project.name}:latest", "."
+    doLast {
+      exec {
+        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "docker.io/${dockerOwner}/${project.name}:latest"
+      }
+      exec {
+        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "docker.io/${dockerOwner}/${project.name}:${dockerVersion}"
+      }
+      exec {
+        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "ghcr.io/${dockerOwner}/${project.name}:latest"
+      }
+      exec {
+        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "ghcr.io/${dockerOwner}/${project.name}:${dockerVersion}"
+      }
+    }
 }
 
