@@ -77,7 +77,7 @@ jobs:
       - name: Validate Gradle wrapper matches official SHA-256 checksums for security
         uses: gradle/wrapper-validation-action@v1
 
-      - run: echo OCI image build tool ${BUILD_OCI_WITH} or ${{ env.BUILD_OCI_WITH }}
+      - run: echo OCI image build tool ${{ env.BUILD_OCI_WITH }}
 
       # (CONDITIONAL) build using docker
       - name: Execute Gradle build of OCI with Docker
@@ -91,16 +91,16 @@ jobs:
       - name: Execute Gradle build of OCI with Buildah
         run: ./gradlew buildah -PdockerVersion=${{ steps.getversion.outputs.VERSION }}
         if: ${{ env.BUILD_OCI_WITH == 'buildah' }}
-      - name: list docker images available
+      - name: list buildah images available
         run: buildah images
         if: ${{ env.BUILD_OCI_WITH == 'buildah' }}
 
       # Push to Github CR
       - run: echo push to Github Container Registry ${{ env.PUSH_TO_GITHUBCR }}
-      - name: Buildah push to GH Registry spring-security5-oauth2-resource-server
+      - name: Buildah push to Github Container Registry
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ steps.repo.outputs.REPO }}
+          image: ${{ env.FULL_IMAGE_NAME }}
           tags: ${{ steps.getversion.outputs.VERSION }} latest
           registry: ${{ env.GH_REGISTRY }}/${{ github.repository_owner }}
           username: ${{ github.actor }}
@@ -111,13 +111,14 @@ jobs:
 
       # Push to Docker Hub
       - run: echo push to Docker Hub ${{ env.PUSH_TO_DOCKERHUB }}
-      - name: Buildah push to Docker Registry spring-security5-oauth2-resource-server
+      - name: Buildah push to Docker Hub
         uses: redhat-actions/push-to-registry@v2
         env:
           USER: ${{ secrets.DOCKER_USERNAME }}
           PASS: ${{ secrets.DOCKER_TOKEN }}
         with:
-          image: ${{ steps.repo.outputs.REPO }}
+          image: ${{ env.FULL_IMAGE_NAME }}
+          #image: ${{ steps.repo.outputs.REPO }}
           tags: ${{ steps.getversion.outputs.VERSION }} latest
           registry: docker.io/${{ github.repository_owner }}
           username: ${{ secrets.DOCKER_USERNAME }}

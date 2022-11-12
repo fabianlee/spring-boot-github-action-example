@@ -20,7 +20,8 @@ bootJar {
   archiveFileName = "springBoot.jar"
 }
 
-// ADDED ability to specify docker version on command line
+// ADDED ability to specify docker owner and version on command line
+ext.dockerOwner = project.hasProperty('dockerOwner') ? project.getProperty('dockerOwner'):'fabianlee'
 ext.dockerVersion = project.hasProperty('dockerVersion') ? project.getProperty('dockerVersion'):'1.0.0'
 
 repositories {
@@ -44,7 +45,7 @@ tasks.named('test') {
 docker {
     group "OCI"
     dependsOn bootJar
-    name "spring-boot-github-action:${dockerVersion}"
+    name "${dockerOwner}/spring-boot-github-action:${dockerVersion}"
     files 'build/libs/springBoot.jar'
     dockerfile file('src/main/resources/Dockerfile')
 }
@@ -60,6 +61,6 @@ task buildah(type: Exec) {
     dependsOn bootJar
     dependsOn copyDockerfile
     workingDir "${buildDir}/libs"
-    commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${project.name}:${dockerVersion}"
+    commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${dockerOwner}/${project.name}:${dockerVersion}"
 }
 
