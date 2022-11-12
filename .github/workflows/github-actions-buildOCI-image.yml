@@ -64,9 +64,10 @@ jobs:
       - name: isolate repository name
         id: repo
         run: |
-          REPO_NAME=${FULL_IMAGE_NAME}
-          echo "REPO_NAME=${REPO_NAME##*/}" >> $GITHUB_OUTPUT
-      - run: echo repo name isolated ${{ steps.repo.outputs.REPO_NAME }}
+          REPO_NAME_ONLY=${FULL_IMAGE_NAME}
+          echo "REPO_NAME_ONLY=${REPO_NAME_ONLY##*/}" >> $GITHUB_OUTPUT
+      - run: echo repo name isolated ${{ steps.repo.outputs.REPO_NAME_ONLY }}
+
       - name: strip off 'v' from GITHUB_REF_NAME
         id: getversion
         run: |
@@ -101,9 +102,7 @@ jobs:
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ env.FULL_IMAGE_NAME }}
-          #image: ${{ steps.repo.outputs.REPO_NAME }}
           tags: ${{ steps.getversion.outputs.VERSION }} latest
-          #registry: ${{ env.GH_REGISTRY }}/${{ github.repository_owner }}
           registry: ${{ env.GH_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -120,7 +119,6 @@ jobs:
           PASS: ${{ secrets.DOCKER_TOKEN }}
         with:
           image: ${{ env.FULL_IMAGE_NAME }}
-          #image: ${{ steps.repo.outputs.REPO_NAME }}
           tags: ${{ steps.getversion.outputs.VERSION }} latest
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
