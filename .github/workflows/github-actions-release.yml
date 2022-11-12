@@ -83,6 +83,6 @@ jobs:
       with:
         name: ${{ env.GITHUB_REF_NAME }}
         tag: ${{ env.GITHUB_REF_NAME }}
-        artifacts: "build/libs/spring-boot-github-action.jar"
+        artifacts: "build/libs/springBoot.jar"
         bodyFile: "body.log"
         token: ${{ secrets.GITHUB_TOKEN }}
