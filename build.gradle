@@ -2,8 +2,6 @@ plugins {
 	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'java'
-	// ADDED for docker plugin
-	id 'com.palantir.docker' version '0.34.0'
 }
 
 // ADDED as source of plugins
@@ -41,26 +39,26 @@ tasks.named('test') {
 }
 
 
-// ADDED build OCI image using Docker
-docker {
-    group "OCI"
-    dependsOn bootJar
-    name "${dockerOwner}/${project.name}:${dockerVersion}"
-    files 'build/libs/springBoot.jar'
-    dockerfile file('src/main/resources/Dockerfile')
-}
-
-
-// ADDED build OCI image using Podman
 task copyDockerfile(type: Copy) {
   from 'src/main/resources/Dockerfile'
   into 'build/libs'
 }
+
+// ADDED build OCI image using Docker
+task docker(type: Exec) {
+    group "OCI"
+    dependsOn bootJar
+    dependsOn copyDockerfile
+    workingDir "${buildDir}/libs"
+    commandLine "docker", "build", "-f", "Dockerfile", "-t", "${dockerOwner}/${project.name}:${dockerVersion}", "-t", "${dockerOwner}/${project.name}:latest", "."
+}
+
+// ADDED build OCI image using Podman
 task buildah(type: Exec) {
     group "OCI"
     dependsOn bootJar
     dependsOn copyDockerfile
     workingDir "${buildDir}/libs"
-    commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${project.name}:${dockerVersion}"
+    commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${project.name}:${dockerVersion}", "-t", "${project.name}:latest"
 }
 
