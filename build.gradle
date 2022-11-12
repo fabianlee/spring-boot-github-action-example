@@ -45,7 +45,7 @@ tasks.named('test') {
 docker {
     group "OCI"
     dependsOn bootJar
-    name "${dockerOwner}/spring-boot-github-action:${dockerVersion}"
+    name "${dockerOwner}/${project.name}:${dockerVersion}"
     files 'build/libs/springBoot.jar'
     dockerfile file('src/main/resources/Dockerfile')
 }
