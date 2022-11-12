@@ -100,8 +100,8 @@ jobs:
       - name: Buildah push to Github Container Registry
         uses: redhat-actions/push-to-registry@v2
         with:
-          #image: ${{ env.FULL_IMAGE_NAME }}
-          image: ${{ steps.repo.outputs.REPO }}
+          image: ${{ env.FULL_IMAGE_NAME }}
+          #image: ${{ steps.repo.outputs.REPO }}
           tags: ${{ steps.getversion.outputs.VERSION }} latest
           registry: ${{ env.GH_REGISTRY }}/${{ github.repository_owner }}
           username: ${{ github.actor }}
