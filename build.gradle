@@ -44,13 +44,15 @@ task copyDockerfile(type: Copy) {
   into 'build/libs'
 }
 
+ext.ownerProject = "${dockerOwner}/${project.name}"
+
 // ADDED build OCI image using Docker
 task docker(type: Exec) {
     group "OCI"
     dependsOn bootJar
     dependsOn copyDockerfile
     workingDir "${buildDir}/libs"
-    commandLine "docker", "build", "-f", "Dockerfile", "-t", "${dockerOwner}/${project.name}:${dockerVersion}", "-t", "${dockerOwner}/${project.name}:latest", "."
+    commandLine "docker", "build", "-f", "Dockerfile", "-t", "${ownerProject}:${dockerVersion}", "-t", "${ownerProject}:latest", "."
 }
 
 // ADDED build OCI image using Podman
@@ -59,20 +61,11 @@ task buildah(type: Exec) {
     dependsOn bootJar
     dependsOn copyDockerfile
     workingDir "${buildDir}/libs"
-    commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${dockerOwner}/${project.name}:latest", "."
-    doLast {
-      exec {
-        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "docker.io/${dockerOwner}/${project.name}:latest"
-      }
-      exec {
-        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "docker.io/${dockerOwner}/${project.name}:${dockerVersion}"
-      }
-      exec {
-        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "ghcr.io/${dockerOwner}/${project.name}:latest"
-      }
-      exec {
-        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "ghcr.io/${dockerOwner}/${project.name}:${dockerVersion}"
-      }
-    }
+    commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${ownerProject}:latest", "-t", "docker.io/${ownerProject}:latest","-t", "docker.io/${ownerProject}:${dockerVersion}","-t","ghcr.io/${ownerProject}:latest","-t","ghcr.io/${ownerProject}:${dockerVersion}", "."
+//    doLast {
+//      exec {
+//        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "docker.io/${dockerOwner}/${project.name}:latest"
+//      }
+//    }
 }
 
