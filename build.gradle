@@ -38,7 +38,7 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-
+// ADDED to make Dockerfile available in build directory
 task copyDockerfile(type: Copy) {
   from 'src/main/resources/Dockerfile'
   into 'build/libs'
@@ -55,7 +55,7 @@ task docker(type: Exec) {
     commandLine "docker", "build", "-f", "Dockerfile", "-t", "${ownerProject}:${dockerVersion}", "-t", "${ownerProject}:latest", "."
 }
 
-// ADDED build OCI image using Podman
+// ADDED build OCI image using Buildah
 task buildah(type: Exec) {
     group "OCI"
     dependsOn bootJar
