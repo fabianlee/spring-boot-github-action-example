@@ -58,10 +58,4 @@ task buildah(type: Exec) {
     dependsOn copyDockerfile
     workingDir "${buildDir}/libs"
     commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${ownerProject}:latest", "-t", "docker.io/${ownerProject}:latest","-t", "docker.io/${ownerProject}:${dockerVersion}","-t","ghcr.io/${ownerProject}:latest","-t","ghcr.io/${ownerProject}:${dockerVersion}", "."
-//    doLast {
-//      exec {
-//        commandLine "buildah", "tag", "localhost/${dockerOwner}/${project.name}:latest", "docker.io/${dockerOwner}/${project.name}:latest"
-//      }
-//    }
 }
-
