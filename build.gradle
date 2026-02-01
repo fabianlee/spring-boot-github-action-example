@@ -46,7 +46,7 @@ ext.ownerProject = "${dockerOwner}/${project.name}"
 task docker(type: Exec) {
     group "OCI"
     dependsOn bootJar
-    dependsOn copyDockerfile
+    dependsOn "copyDockerfile"
     workingDir "${buildDir}/libs"
     commandLine "docker", "build", "-f", "Dockerfile", "-t", "${ownerProject}:${dockerVersion}", "-t", "${ownerProject}:latest", "."
 }
@@ -55,7 +55,7 @@ task docker(type: Exec) {
 task buildah(type: Exec) {
     group "OCI"
     dependsOn bootJar
-    dependsOn copyDockerfile
+    dependsOn "copyDockerfile"
     workingDir "${buildDir}/libs"
     commandLine "buildah", "bud", "-f", "Dockerfile", "-t", "${ownerProject}:latest", "-t", "docker.io/${ownerProject}:latest","-t", "docker.io/${ownerProject}:${dockerVersion}","-t","ghcr.io/${ownerProject}:latest","-t","ghcr.io/${ownerProject}:${dockerVersion}", "."
 }
