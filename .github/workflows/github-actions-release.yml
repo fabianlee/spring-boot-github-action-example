@@ -35,12 +35,12 @@ jobs:
     - name: setup Java
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '25'
         distribution: adopt
         cache: gradle
 
     - name: Validate Gradle wrapper matches official SHA-256 checksums for security
-      uses: gradle/wrapper-validation-action@v1
+      uses: gradle/actions/wrapper-validation-action@v3
 
     - name: Execute Gradle build
       run: ./gradlew bootJar
