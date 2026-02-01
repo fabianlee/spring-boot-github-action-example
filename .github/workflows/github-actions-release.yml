@@ -40,7 +40,7 @@ jobs:
         cache: gradle
 
     - name: Validate Gradle wrapper matches official SHA-256 checksums for security
-      uses: gradle/actions/wrapper-validation-action@v3
+      uses: gradle/wrapper-validation-action@v2
 
     - name: Execute Gradle build
       run: ./gradlew bootJar
